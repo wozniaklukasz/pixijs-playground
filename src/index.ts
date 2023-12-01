@@ -2,15 +2,36 @@ import 'normalize.css'
 import './style.css'
 import * as PIXI from 'pixi.js'
 import helloWorld from './playground/hello-world'
+import containerMasking from './playground/container-masking'
+import spriteSheet from './playground/sprite-sheet'
 
-const app = new PIXI.Application({
-  background: '#1099bb',
-  resizeTo: window
-})
+class PixiApp {
+  private readonly app: PIXI.Application
 
-// @ts-expect-error dev tools: https://chromewebstore.google.com/detail/pixijs-devtools/aamddddknhcagpehecnhphigffljadon
-globalThis.__PIXI_APP__ = app
+  constructor () {
+    this.app = new PIXI.Application({
+      background: '#1099bb',
+      resizeTo: window
+    })
 
-document.body.appendChild(app.view as unknown as Node)
+    // @ts-expect-error For PIXI dev tools
+    globalThis.__PIXI_APP__ = this.app
 
-helloWorld(app)
+    document.body.appendChild(this.app.view as unknown as Node)
+
+    // Initialize playground functions
+    // helloWorld(this.app);
+    // containerMasking(this.app);
+  }
+
+  async init () {
+    await this.initSpriteSheet()
+  }
+
+  private async initSpriteSheet () {
+    await spriteSheet(this.app)
+  }
+}
+
+const pixiApp = new PixiApp()
+void pixiApp.init()
