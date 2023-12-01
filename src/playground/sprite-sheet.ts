@@ -1,9 +1,6 @@
 import * as PIXI from 'pixi.js'
-import helloWorld from './hello-world'
 
 const spriteSheet = async (app: PIXI.Application) => {
-  // helloWorld(app)
-
   // Create object to store sprite sheet data
   const atlasData: any = {
     frames: {

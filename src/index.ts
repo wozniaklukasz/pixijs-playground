@@ -4,6 +4,7 @@ import * as PIXI from 'pixi.js'
 import helloWorld from './playground/hello-world'
 import containerMasking from './playground/container-masking'
 import spriteSheet from './playground/sprite-sheet'
+import bodyMove from './playground/body-move'
 
 class PixiApp {
   private readonly app: PIXI.Application
@@ -18,18 +19,13 @@ class PixiApp {
     globalThis.__PIXI_APP__ = this.app
 
     document.body.appendChild(this.app.view as unknown as Node)
-
-    // Initialize playground functions
-    // helloWorld(this.app);
-    // containerMasking(this.app);
   }
 
   async init () {
-    await this.initSpriteSheet()
-  }
-
-  private async initSpriteSheet () {
-    await spriteSheet(this.app)
+    // helloWorld(this.app);
+    // containerMasking(this.app);
+    // await spriteSheet(this.app)
+    await bodyMove(this.app)
   }
 }
 
