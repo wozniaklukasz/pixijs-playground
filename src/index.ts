@@ -7,6 +7,9 @@ const app = new PIXI.Application({
   resizeTo: window
 })
 
+// @ts-expect-error dev tools: https://chromewebstore.google.com/detail/pixijs-devtools/aamddddknhcagpehecnhphigffljadon
+globalThis.__PIXI_APP__ = app
+
 document.body.appendChild(app.view as unknown as Node)
 
 const bunny = PIXI.Sprite.from('https://pixijs.com/assets/bunny.png')
