@@ -8,7 +8,7 @@ class CharacterAnimationHandler {
   private readonly characterSpriteRenderer: CharacterSpriteRenderer
 
   constructor (key: CharacterSpritesKeys) {
-    this.animationSpeed = 0.2
+    this.animationSpeed = 0.1
     this.currentAnimation = {}
 
     this.characterSpriteRenderer = new CharacterSpriteRenderer(key)
@@ -16,14 +16,14 @@ class CharacterAnimationHandler {
 
   async init () {
     // this.currentAnimation.stay = await this.animate(0)
-    this.currentAnimation.moveUp = await this.animate(6)
-    this.currentAnimation.moveDown = await this.animate(1)
-    this.currentAnimation.moveLeft = await this.animate(3)
-    this.currentAnimation.moveRight = await this.animate(4)
+    this.currentAnimation.moveUp = await this.animate(4)
+    this.currentAnimation.moveDown = await this.animate(0)
+    this.currentAnimation.moveLeft = await this.animate(6)
+    this.currentAnimation.moveRight = await this.animate(2)
     this.currentAnimation.moveLeftUp = await this.animate(5)
-    this.currentAnimation.moveRightUp = await this.animate(7)
-    this.currentAnimation.moveLeftDown = await this.animate(0)
-    this.currentAnimation.moveRightDown = await this.animate(2)
+    this.currentAnimation.moveRightUp = await this.animate(3)
+    this.currentAnimation.moveLeftDown = await this.animate(7)
+    this.currentAnimation.moveRightDown = await this.animate(1)
 
     return this.currentAnimation
   }
@@ -34,14 +34,17 @@ class CharacterAnimationHandler {
     return currentAnimation
   }
 
-  async stay () {
-    this.currentAnimation.stay.play()
-  }
-
   private stopAll () {
     Object.values(this.currentAnimation).forEach((animation) => {
       animation.stop()
       animation.visible = false
+    })
+  }
+
+  async stay () {
+    Object.values(this.currentAnimation).forEach((animation) => {
+      animation.gotoAndStop(0)
+      // animation.visible = false
     })
   }
 

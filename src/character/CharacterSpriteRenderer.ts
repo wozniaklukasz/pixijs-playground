@@ -41,7 +41,7 @@ class CharacterSpriteRenderer {
         image: this.spriteProps.path,
         format: 'RGBA8888',
         size: { w: this.spriteProps.width, h: this.spriteProps.height },
-        scale: 1
+        scale: 0.5
       },
       animations: { ...animations }
     }

@@ -1,31 +1,19 @@
-import * as PIXI from 'pixi.js'
-import { pixiApp } from '../PixiApp'
 import CharacterAnimationHandler from './CharacterAnimationHandler'
+import { type CharacterSpritesKeys } from './types'
 
 class Character {
-  private readonly app: PIXI.Application
   private readonly animationHandler: CharacterAnimationHandler
 
-  constructor () {
-    this.app = pixiApp()
-    // this.animationHandler = new CharacterAnimationHandler('bodyMove')
-    // this.animationHandler = new CharacterAnimationHandler('knight')
-    this.animationHandler = new CharacterAnimationHandler('civilian')
+  constructor (key: CharacterSpritesKeys) {
+    this.animationHandler = new CharacterAnimationHandler(key)
   }
 
   async init () {
-    const container = new PIXI.Container()
-    container.x = this.app.screen.width / 2
-    container.y = this.app.screen.height / 2
-    this.app.stage.addChild(container)
-
     const animatedSprites = await this.animationHandler.init()
 
-    Object.values(animatedSprites).forEach((animatedSprite) => {
-      container.addChild(animatedSprite)
-    })
-
     this.setupKeyboardControls()
+
+    return animatedSprites
   }
 
   private setupKeyboardControls () {
@@ -55,6 +43,21 @@ class Character {
           break
         case 'c':
           await this.animationHandler.moveRightDown()
+          break
+      }
+    })
+
+    window.addEventListener('keyup', async (e) => {
+      switch (e.key) {
+        case 'q':
+        case 'w':
+        case 'e':
+        case 'a':
+        case 'd':
+        case 'z':
+        case 'x':
+        case 'c':
+          await this.animationHandler.stay()
           break
       }
     })
