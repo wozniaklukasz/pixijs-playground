@@ -1,25 +1,16 @@
 import * as PIXI from 'pixi.js'
-
-interface SpriteProps {
-  path: string
-  width: number
-  height: number
-  cols: number
-  rows: number
-}
-
-type AnimationName = 'stay' | 'moveUp' | 'moveDown' | 'moveLeft' | 'moveRight'
+import { CharacterSprites, type CharacterSpritesKeys, type SpriteProps } from './types'
 
 class CharacterSpriteRenderer {
   private readonly spriteProps: SpriteProps
   private readonly xSpritePosition: number
   private readonly ySpritePosition: number
 
-  constructor (spriteProps: SpriteProps) {
-    this.spriteProps = spriteProps
+  constructor (key: CharacterSpritesKeys) {
+    this.spriteProps = CharacterSprites[key]
 
-    this.xSpritePosition = this.spriteProps.width / this.spriteProps.rows
-    this.ySpritePosition = this.spriteProps.height / this.spriteProps.cols
+    this.xSpritePosition = this.spriteProps.width / this.spriteProps.cols
+    this.ySpritePosition = this.spriteProps.height / this.spriteProps.rows
   }
 
   private getFrames (name: string, y: number, cols: number) {
@@ -40,7 +31,7 @@ class CharacterSpriteRenderer {
   }
 
   async renderSprite (y = 0) {
-    const frameName = `character-${y}`
+    const frameName = `${this.spriteProps.name}-${y}`
 
     const { frames, animations } = this.getFrames(frameName, y, this.spriteProps.cols)
 

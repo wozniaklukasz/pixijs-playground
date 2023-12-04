@@ -5,7 +5,6 @@ class PixiApp {
   private readonly app: PIXI.Application
 
   private constructor () {
-    console.log('PixiApp constructor')
     this.app = new PIXI.Application({
       background: '#1099bb',
       resizeTo: window
