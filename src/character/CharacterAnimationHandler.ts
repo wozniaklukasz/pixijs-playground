@@ -1,110 +1,121 @@
-import type * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js'
 import CharacterSpriteRenderer from './CharacterSpriteRenderer'
 import { type CharacterSpritesKeys } from './types'
 
+type Animation = 'moveUp' | 'moveDown' | 'moveLeft' | 'moveRight' | 'moveLeftUp' | 'moveRightUp' | 'moveLeftDown' | 'moveRightDown'
+
 class CharacterAnimationHandler {
   private readonly animationSpeed: number
-  private readonly currentAnimation: Record<string, PIXI.AnimatedSprite>
+  private readonly animationTextures: Record<string, PIXI.Texture[]>
   private readonly characterSpriteRenderer: CharacterSpriteRenderer
+
+  private currentAnimation: PIXI.AnimatedSprite | null = null
+  private lastAnimation: Animation | null = null
 
   constructor (key: CharacterSpritesKeys) {
     this.animationSpeed = 0.1
-    this.currentAnimation = {}
+    this.animationTextures = {}
 
     this.characterSpriteRenderer = new CharacterSpriteRenderer(key)
   }
 
   async init () {
-    // this.currentAnimation.stay = await this.animate(0)
-    this.currentAnimation.moveUp = await this.animate(4)
-    this.currentAnimation.moveDown = await this.animate(0)
-    this.currentAnimation.moveLeft = await this.animate(6)
-    this.currentAnimation.moveRight = await this.animate(2)
-    this.currentAnimation.moveLeftUp = await this.animate(5)
-    this.currentAnimation.moveRightUp = await this.animate(3)
-    this.currentAnimation.moveLeftDown = await this.animate(7)
-    this.currentAnimation.moveRightDown = await this.animate(1)
+    await this.preloadSprites()
+    await this.initCharacter()
 
     return this.currentAnimation
   }
 
-  private async animate (animationName: number): Promise<PIXI.AnimatedSprite> {
-    const currentAnimation = await this.characterSpriteRenderer.renderSprite(animationName)
-    currentAnimation.animationSpeed = this.animationSpeed
-    return currentAnimation
+  private async preloadSprites () {
+    this.animationTextures.moveUp = await this.characterSpriteRenderer.renderSprite(4)
+    this.animationTextures.moveDown = await this.characterSpriteRenderer.renderSprite(0)
+    this.animationTextures.moveLeft = await this.characterSpriteRenderer.renderSprite(6)
+    this.animationTextures.moveRight = await this.characterSpriteRenderer.renderSprite(2)
+    this.animationTextures.moveLeftUp = await this.characterSpriteRenderer.renderSprite(5)
+    this.animationTextures.moveRightUp = await this.characterSpriteRenderer.renderSprite(3)
+    this.animationTextures.moveLeftDown = await this.characterSpriteRenderer.renderSprite(7)
+    this.animationTextures.moveRightDown = await this.characterSpriteRenderer.renderSprite(1)
   }
 
-  private stopAll () {
-    Object.values(this.currentAnimation).forEach((animation) => {
-      animation.stop()
-      animation.visible = false
-    })
+  private async initCharacter () {
+    this.currentAnimation = new PIXI.AnimatedSprite(this.animationTextures.moveDown)
+    this.currentAnimation.animationSpeed = this.animationSpeed
   }
 
   async stay () {
-    Object.values(this.currentAnimation).forEach((animation) => {
-      animation.gotoAndStop(0)
-      // animation.visible = false
-    })
+    this.currentAnimation?.stop()
+    this.lastAnimation = null
+  }
+
+  private move (animationName: Animation, { x, y }: { x?: number, y?: number } = {}) {
+    if (this.currentAnimation == null) return
+
+    if (animationName !== this.lastAnimation) {
+      this.currentAnimation.textures = this.animationTextures[animationName]
+      this.currentAnimation.play()
+    }
+
+    if (x != null) {
+      this.currentAnimation.x += x
+    }
+    if (y != null) {
+      this.currentAnimation.y += y
+    }
+
+    this.lastAnimation = animationName
   }
 
   async moveLeftUp () {
-    this.stopAll()
-
-    this.currentAnimation.moveLeftUp.play()
-    this.currentAnimation.moveLeftUp.visible = true
+    this.move('moveLeftUp', {
+      x: -1,
+      y: -1
+    })
   }
 
   async moveUp () {
-    this.stopAll()
-
-    this.currentAnimation.moveUp.play()
-    this.currentAnimation.moveUp.visible = true
+    this.move('moveUp', {
+      y: -1
+    })
   }
 
   async moveRightUp () {
-    this.stopAll()
-
-    this.currentAnimation.moveRightUp.play()
-    this.currentAnimation.moveRightUp.visible = true
-  }
-
-  async moveLeftDown () {
-    this.stopAll()
-
-    this.currentAnimation.moveLeftDown.play()
-    this.currentAnimation.moveLeftDown.visible = true
-  }
-
-  async moveRightDown () {
-    this.stopAll()
-
-    this.currentAnimation.moveRightDown.play()
-    this.currentAnimation.moveRightDown.visible = true
-  }
-
-  async moveDown () {
-    this.stopAll()
-
-    this.currentAnimation.moveDown.play()
-    this.currentAnimation.moveDown.visible = true
+    this.move('moveRightUp', {
+      x: 1,
+      y: -1
+    })
   }
 
   async moveLeft () {
-    this.stopAll()
-
-    this.currentAnimation.moveLeft.play()
-    this.currentAnimation.moveLeft.visible = true
+    this.move('moveLeft', {
+      x: -1
+    })
   }
 
   async moveRight () {
-    this.stopAll()
-
-    this.currentAnimation.moveRight.play()
-    this.currentAnimation.moveRight.visible = true
+    this.move('moveRight', {
+      x: 1
+    })
   }
 
-  // Additional methods for handling different animations can be added here
+  async moveLeftDown () {
+    this.move('moveLeftDown', {
+      x: -1,
+      y: 1
+    })
+  }
+
+  async moveDown () {
+    this.move('moveDown', {
+      y: 1
+    })
+  }
+
+  async moveRightDown () {
+    this.move('moveRightDown', {
+      x: 1,
+      y: 1
+    })
+  }
 }
 
 export default CharacterAnimationHandler

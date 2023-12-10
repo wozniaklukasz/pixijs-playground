@@ -26,7 +26,7 @@ class Game {
     const character = new Character(key)
     const sprites = await character.init()
 
-    container.addChild(...Object.values(sprites))
+    if (sprites != null) { container.addChild(sprites) }
   }
 
   private async renderBackground () {

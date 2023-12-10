@@ -53,7 +53,7 @@ class CharacterSpriteRenderer {
 
     await spritesheet.parse()
 
-    return new PIXI.AnimatedSprite(spritesheet.animations[frameName])
+    return spritesheet.animations[frameName]
   }
 }
 
